@@ -1,7 +1,6 @@
 ---
 
 name: 'Jelastic CLI'
-author: 'DovnarAlexander'
 branding:
   icon: file-plus
   color: red

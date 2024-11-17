@@ -9,14 +9,14 @@ Performs some actions via Jelastic CLI via API
 #### `jelastic_password`
 **Required**Jelastic Password or API Token
 #### `task`
-**Required**Task to execute. More info [here](https://docs.jelastic.com/cli/).
+**Required**Task to execute. More info [here](https://docs.jelastic.com/cli/). or can be a comman seperated task to run in parallel
 ### Outputs
 #### `output`
 Result JSON document returned from Jelastic.
 ### Example usage
 ```yaml
   - name: Run GetEnv command
-    uses: DovnarAlexander/github-actions-jelastic@master
+    uses: calcgendev/jelastic-cli-actions@master
     with:
       jelastic_url: app.mycloud.by
       jelastic_username: ${{ secrets.JELASTIC_USERNAME }}

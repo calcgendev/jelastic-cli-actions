@@ -1,8 +1,6 @@
 FROM openjdk:16-alpine3.13
-# Labels
-LABEL maintainer="dovnar.alexander@gmail.com"
 # Install Bash, cURL and clean up APK
-RUN apk add --no-cache curl=~7 bash=~5 jq=~1 && \
+RUN apk add --no-cache curl=~7 bash=~5 jq=~1 parallel && \
     rm -vrf /var/cache/apk/*
 # Create User and Group
 ENV USER=docker
