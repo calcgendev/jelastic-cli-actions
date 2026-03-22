@@ -1,25 +1,40 @@
-FROM openjdk:16-alpine3.13
-# Install Bash, cURL and clean up APK
-RUN apk add --no-cache curl=~7 bash=~5 jq=~1 parallel && \
-    rm -vrf /var/cache/apk/*
+# Use supported OpenJDK image (Temurin)
+FROM eclipse-temurin:17-jdk-alpine
+
+# Install required packages
+RUN apk add --no-cache \
+    curl \
+    bash \
+    jq \
+    parallel
+
 # Create User and Group
 ENV USER=docker
 ENV _UID=12345
 ENV _GID=23456
+
 RUN mkdir /cli && \
-    addgroup --gid "$_GID" --system "$USER" && \
-    adduser --disabled-password --gecos "" --home /cli \
-    --ingroup "$USER" --uid "$_UID" "$USER" && \
-    chown $USER:$USER /cli
-# Changing workdir
+    addgroup -g "$_GID" "$USER" && \
+    adduser -D -h /cli -G "$USER" -u "$_UID" "$USER" && \
+    chown -R $USER:$USER /cli
+
+# Set working directory
 WORKDIR /cli
-# Changing user
+
+# Switch user
 USER docker
-# Enable Pipefail
+
+# Enable pipefail
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
 # Install Jelastic CLI
-RUN curl -s ftp://ftp.jelastic.com/pub/cli/jelastic-cli-installer.sh | bash
-# Copy entrypoint
+RUN curl -fsSL ftp://ftp.jelastic.com/pub/cli/jelastic-cli-installer.sh | bash
+
+# Copy entrypoints
 COPY entrypoint.sh /cli/entrypoint.sh
 COPY entrypoint-github.sh /cli/entrypoint-github.sh
+
+# Make sure scripts are executable
+RUN chmod +x /cli/entrypoint.sh /cli/entrypoint-github.sh
+
 ENTRYPOINT ["/cli/entrypoint.sh"]
