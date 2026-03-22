@@ -20,8 +20,11 @@ RUN mkdir /cli && \
 # Set working directory
 WORKDIR /cli
 
-# Install Jelastic CLI (still root here)
-RUN curl -fsSL ftp://ftp.jelastic.com/pub/cli/jelastic-cli-installer.sh | bash
+# Install Jelastic CLI (still root here).
+# The upstream installer installs under $HOME/jelastic; during build HOME is /root by default,
+# but the entrypoint uses /cli/jelastic. Force user.home to /cli so paths match.
+RUN HOME=/cli curl -fsSL ftp://ftp.jelastic.com/pub/cli/jelastic-cli-installer.sh | bash && \
+    chown -R docker:docker /cli
 
 # Copy entrypoints
 COPY entrypoint.sh /cli/entrypoint.sh
